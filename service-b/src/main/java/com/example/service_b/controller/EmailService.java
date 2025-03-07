@@ -29,7 +29,7 @@ public class EmailService {
         this.objectMapper = objectMapper;
     }
 
-    public String validateEmail(String email) throws InvalidEmailException {
+    public ResponseEntity<String> validateEmail(String email) throws InvalidEmailException {
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/service-c/validate-email")
@@ -45,27 +45,12 @@ public class EmailService {
 
                             GlobalExceptionHandler.ErrorMessage errorResponse = objectMapper.readValue(responseBodyString,
                                     GlobalExceptionHandler.ErrorMessage.class);
+
                             throw new InvalidEmailException(
                                     errorResponse.getMessage(), // Сообщение из JSON
                                     errorResponse.getStatus() // Статус из JSON
                             );
                         })
-                .body(String.class);
+                .toEntity(String.class);
     }
-
-    private void handleErrorResponse(ClientHttpResponse response) throws IOException {
-        InputStream responseBody = response.getBody();
-
-        String responseBodyString = new String(responseBody.readAllBytes());
-
-        GlobalExceptionHandler.ErrorMessage errorResponse = objectMapper.readValue(responseBodyString,
-                GlobalExceptionHandler.ErrorMessage.class);
-
-        new InvalidEmailException(
-                errorResponse.getMessage(), // Сообщение из JSON
-                errorResponse.getStatus() // Статус из JSON
-        );
-    }
-
-
 }

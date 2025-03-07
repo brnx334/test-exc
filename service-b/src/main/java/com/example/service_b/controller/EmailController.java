@@ -17,7 +17,7 @@ public class EmailController {
     private EmailService emailService;
 
     @GetMapping("/validate-email")
-    public String validateEmail(@RequestParam String email) throws InvalidEmailException {
+    public ResponseEntity<String> validateEmail(@RequestParam String email) throws InvalidEmailException {
         return emailService.validateEmail(email);
     }
 }

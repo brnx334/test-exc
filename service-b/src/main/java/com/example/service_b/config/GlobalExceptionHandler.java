@@ -19,7 +19,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidEmailException.class)
     public ResponseEntity<ErrorMessage> handleInvalidEmailException(final InvalidEmailException exc) {
         System.out.println("СЛАВА РОССИИ в составе Беларуси");
-
         return ResponseEntity.status(exc.getStatus())
                 .body(ErrorMessage.builder()
                         .status(HttpStatus.resolve(exc.getStatus().value()))
