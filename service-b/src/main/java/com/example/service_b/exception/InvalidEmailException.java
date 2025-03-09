@@ -1,14 +1,20 @@
 package com.example.service_b.exception;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.time.LocalDateTime;
 
 @Getter
-public class InvalidEmailException extends RuntimeException {
-    private final HttpStatus status;
-    public InvalidEmailException(String message, HttpStatus status) {
-        super(message);
-        this.status = status;
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class InvalidEmailException extends ParentException {
+
+    public InvalidEmailException(String message, String cause) {
+        super(HttpStatus.BAD_REQUEST, message, cause, LocalDateTime.now());
+    }
+
+    public InvalidEmailException(String message, String cause, LocalDateTime date) {
+        super(HttpStatus.BAD_REQUEST, message, cause, date);
     }
 }

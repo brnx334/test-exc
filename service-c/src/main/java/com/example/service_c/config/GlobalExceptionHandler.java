@@ -1,7 +1,5 @@
 package com.example.service_c.config;
 
-
-import com.example.service_c.exception.InvalidEmailException;
 import com.example.service_c.exception.ParentException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
@@ -17,14 +15,16 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(InvalidEmailException.class)
-    public ResponseEntity<ErrorMessage> handleInvalidEmailException(final InvalidEmailException exc) {
-        return ResponseEntity.status(exc.getStatus())
+    @ExceptionHandler(ParentException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidEmailException(final ParentException exc) {
+        return ResponseEntity.status(exc.getHttpStatus())
                 .body(ErrorMessage.builder()
-                        .status(HttpStatus.resolve(exc.getStatus().value()))
+                        .status(exc.getHttpStatus())
                         .message(exc.getMessage())
-                        .cause(exc.getClass())
-                        .build());
+                        .originalCause(exc.getOriginalCause())
+                        .date(exc.getDate())
+                        .build()
+                );
     }
 
     @Getter
@@ -32,11 +32,10 @@ public class GlobalExceptionHandler {
     @Jacksonized
     public static class ErrorMessage {
 
-        @Builder.Default
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        private LocalDateTime date = LocalDateTime.now();
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime date;
         private HttpStatus status;
         private String message;
-        private Class<? extends Throwable> cause;
+        private String originalCause;
     }
 }

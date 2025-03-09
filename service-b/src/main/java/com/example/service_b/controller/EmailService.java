@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
@@ -30,27 +31,36 @@ public class EmailService {
     }
 
     public ResponseEntity<String> validateEmail(String email) throws InvalidEmailException {
-        return restClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/service-c/validate-email")
-                        .queryParam("email", email)
-                        .build())
-                .retrieve()
-                .onStatus(status -> status == HttpStatus.CONFLICT,
-                        (request, response) -> {
+        try {
+            return restClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/service-c/validate-email")
+                            .queryParam("email", email)
+                            .build())
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError,
+                            (request, response) -> {
 
-                            InputStream responseBody = response.getBody();
+                                InputStream responseBody = response.getBody();
 
-                            String responseBodyString = new String(responseBody.readAllBytes());
+                                String responseBodyString = new String(responseBody.readAllBytes());
 
-                            GlobalExceptionHandler.ErrorMessage errorResponse = objectMapper.readValue(responseBodyString,
-                                    GlobalExceptionHandler.ErrorMessage.class);
+                                GlobalExceptionHandler.ErrorMessage errorResponse =
+                                        objectMapper.readValue(
+                                                responseBodyString,
+                                                GlobalExceptionHandler.ErrorMessage.class
+                                        );
 
-                            throw new InvalidEmailException(
-                                    errorResponse.getMessage(), // Сообщение из JSON
-                                    errorResponse.getStatus() // Статус из JSON
-                            );
-                        })
-                .toEntity(String.class);
-    }
+                                throw new InvalidEmailException(
+                                        errorResponse.getMessage(),
+                                        errorResponse.getOriginalCause(),
+                                        errorResponse.getDate()
+                                );
+                            })
+                    .toEntity(String.class);
+
+        } catch (Exception ex) {
+
+        }
+
 }

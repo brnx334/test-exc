@@ -1,7 +1,7 @@
 package com.example.service_b.config;
 
 
-import com.example.service_b.exception.InvalidEmailException;
+import com.example.service_b.exception.ParentException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,15 +16,16 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(InvalidEmailException.class)
-    public ResponseEntity<ErrorMessage> handleInvalidEmailException(final InvalidEmailException exc) {
-        System.out.println("СЛАВА РОССИИ в составе Беларуси");
-        return ResponseEntity.status(exc.getStatus())
+    @ExceptionHandler(ParentException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidEmailException(final ParentException exc) {
+        return ResponseEntity.status(exc.getHttpStatus())
                 .body(ErrorMessage.builder()
-                        .status(HttpStatus.resolve(exc.getStatus().value()))
+                        .status(exc.getHttpStatus())
                         .message(exc.getMessage())
-                        .cause(String.valueOf(exc.getCause())) // Используем поле cause из исключения
-                        .build());
+                        .originalCause(exc.getOriginalCause())
+                        .date(exc.getDate())
+                        .build()
+                );
     }
 
     @Getter
@@ -32,11 +33,10 @@ public class GlobalExceptionHandler {
     @Jacksonized
     public static class ErrorMessage {
 
-        @Builder.Default
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-        private LocalDateTime date = LocalDateTime.now();
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime date;
         private HttpStatus status;
         private String message;
-        private String cause; // Поле для хранения причины (имя класса исключения)
+        private String originalCause;
     }
 }
