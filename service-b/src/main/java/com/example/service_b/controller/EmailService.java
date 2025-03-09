@@ -15,9 +15,6 @@ import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InvalidClassException;
-import java.time.LocalDateTime;
-
 
 @Service
 public class EmailService {
@@ -31,36 +28,31 @@ public class EmailService {
     }
 
     public ResponseEntity<String> validateEmail(String email) throws InvalidEmailException {
-        try {
-            return restClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/service-c/validate-email")
-                            .queryParam("email", email)
-                            .build())
-                    .retrieve()
-                    .onStatus(HttpStatusCode::isError,
-                            (request, response) -> {
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/service-c/validate-email")
+                        .queryParam("email", email)
+                        .build())
+                .retrieve()
+                .onStatus(HttpStatusCode::isError,
+                        (request, response) -> {
 
-                                InputStream responseBody = response.getBody();
+                            InputStream responseBody = response.getBody();
 
-                                String responseBodyString = new String(responseBody.readAllBytes());
+                            String responseBodyString = new String(responseBody.readAllBytes());
 
-                                GlobalExceptionHandler.ErrorMessage errorResponse =
-                                        objectMapper.readValue(
-                                                responseBodyString,
-                                                GlobalExceptionHandler.ErrorMessage.class
-                                        );
+                            GlobalExceptionHandler.ErrorMessage errorResponse =
+                                    objectMapper.readValue(
+                                            responseBodyString,
+                                            GlobalExceptionHandler.ErrorMessage.class
+                                    );
 
-                                throw new InvalidEmailException(
-                                        errorResponse.getMessage(),
-                                        errorResponse.getOriginalCause(),
-                                        errorResponse.getDate()
-                                );
-                            })
-                    .toEntity(String.class);
-
-        } catch (Exception ex) {
-
-        }
-
+                            throw new InvalidEmailException(
+                                    errorResponse.getMessage(),
+                                    errorResponse.getOriginalCause(),
+                                    errorResponse.getDate()
+                            );
+                        })
+                .toEntity(String.class);
+    }
 }

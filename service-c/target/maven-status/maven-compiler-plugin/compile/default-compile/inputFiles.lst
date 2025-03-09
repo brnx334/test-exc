@@ -1,0 +1,6 @@
+/Users/mikitayankouski/Desktop/projects/test-exc/service-c/src/main/java/com/example/service_c/ServiceCApplication.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-c/src/main/java/com/example/service_c/config/GlobalExceptionHandler.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-c/src/main/java/com/example/service_c/controller/EmailController.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-c/src/main/java/com/example/service_c/controller/EmailService.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-c/src/main/java/com/example/service_c/exception/InvalidEmailException.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-c/src/main/java/com/example/service_c/exception/ParentException.java

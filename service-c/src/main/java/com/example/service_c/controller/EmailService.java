@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Service
 public class EmailService {
 
-    public String validateEmail(String email) throws InvalidEmailException {
+    public String validateEmail(String email) {
         if (!isValidEmail(email)) {
             throw new InvalidEmailException("Invalid email: " + email, InvalidEmailException.class.getName());
         }

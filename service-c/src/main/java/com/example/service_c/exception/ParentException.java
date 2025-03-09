@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 
 @Getter
-public class ParentException extends Exception {
+public class ParentException extends RuntimeException {
     protected final String originalCause;
     protected final LocalDateTime date;
     protected final HttpStatus httpStatus;

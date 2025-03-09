@@ -1,0 +1,7 @@
+/Users/mikitayankouski/Desktop/projects/test-exc/service-b/src/main/java/com/example/service_b/ServiceBApplication.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-b/src/main/java/com/example/service_b/config/AppConfig.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-b/src/main/java/com/example/service_b/config/GlobalExceptionHandler.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-b/src/main/java/com/example/service_b/controller/EmailController.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-b/src/main/java/com/example/service_b/controller/EmailService.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-b/src/main/java/com/example/service_b/exception/InvalidEmailException.java
+/Users/mikitayankouski/Desktop/projects/test-exc/service-b/src/main/java/com/example/service_b/exception/ParentException.java
